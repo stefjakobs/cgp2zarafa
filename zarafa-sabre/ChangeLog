@@ -1,0 +1,86 @@
+- Change FALSE() functions to comparisons with the 'false' constant, to make
+  the code more standard.
+- Introduce the INCLUDE_SHARED_ADDRESSBOOKS config option to pull in address
+  books shared with different users.
+- Split off the Webaccess settings into separate class: the ZarafaBridge class
+  is getting a bit bloated.
+- Add support for shared addressbooks. Thanks to @erwint for donating the core
+  logic: https://github.com/erwint/sabre-zarafa/
+- ZarafaBridge: add method to get the Zarafa Webaccess settings, which we will
+  need shortly in order to find the user's shared folders.
+- VCardParser: first collect all email addresses, then sort them in order of
+  preference as given by client. Previously the addresses were saved in source
+  order, the first three to appear made it to Zarafa.
+- FAX,OTHER maps to 'primary_fax_number' and vice versa, which follows the
+  convention used by Zarafa Webmail and OSX Addressbook;
+- FAX property now maps to 'business_fax_number', which is what Zarafa Webmail
+  uses, likewise with TEL,WORK and 'office_telephone_number';
+- Fix for a really common bug: avoid PHP fatal error in the folder name
+  substitution code by checking if an array value is set before trying to
+  access it;
+
+* Wed Jun 26 2013 Alfred Klomp <alfred@bokxing-it.nl> 0.21
+- Use shorthand notation to get property parameters; just as good as the long
+  version, but way more readable.
+- Don't discard values for website and IM when we don't have any MAPI slots
+  left; compress their values into a single MAPI slot by making a
+  comma-separated list.
+- Zarafa_Folder: add support for renaming folders according to a user-defined
+  template; this helps in the situation where a public and a private folder
+  have the same name.
+
+* Wed Jun 05 2013 Alfred Klomp <alfred@bokxing-it.nl> 0.20
+- VCardProducer: change SORT-AS tag to SORT-STRING; SORT-AS comes into play in
+  vCard 4.0 as a parameter to the N property; generate it as such.
+- VCardParser: add support for many proprietary phone/relation properties.
+- Update README.md, add documentation.
+- Bugfix: don't display mobile phone number twice.
+- VCardParser: add a slew of proprietary instant messaging properties to the IM
+  property matcher.
+- Migrate the code to Sabre-VObject 3.0.0 format; make backwards-incompatible
+  changes that break Sabre-VObject 2.x. The breakage is necessary because
+  Sabre-VObject 3.0 breaks compatibility. We need to migrate to Sabre-VObject
+  3.0 because it has proper support for escaping multiline fields, such as the
+  NOTE: property. These fields break in 2.x.
+- Don't parse the REV: tag as a Unix timestamp, and don't fill it with the
+  lastmodified timestamp when creating a VCard. Turns out Evolution sets this
+  property to a MD5 hash.
+
+* Tue May 28 2013 Alfred Klomp <alfred@bokxing-it.nl> 0.19
+- VCardParser and VCardProducer: clean up function interfaces, improve
+  encapsulation, split large methods into smaller ones.
+- Add ETag support, based on the hash of the EntryID and the last-modified
+  timestamp. This should be sufficiently unique. Add a config option to turn
+  this feature off if desired. Creating contacts now works in OSX Contacts.
+- VCardParser: remove superfluous escaping functions; VObject handles that now;
+- VCardParser: rewrite contact photo logic, the old code did not properly
+  recognize differences between uppercase and lowercase encoding strings. Also
+  build in some more checks, notably the check if the GD extension is loaded
+  before trying to use it.
+- VCardProducer: don't error out when email display name not found;
+- Create separate logging class, which will try to load log4php but silently
+  fail if that component is not installed; this loosens the dependency on
+  log4php.
+
+* Mon Apr 22 2013 Alfred Klomp <alfred@bokxing-it.nl> 0.18
+- Tag version 0.18
+- Rewrote email producing code to print pref property;
+- Rewrote telephone number parsing code for clarity/solidity;
+- Calculate CTag from all cards in directory; this fixes synchronization;
+- Add documentation on how to disable ETag support;
+- Add end-user instructions on how to download and install SabreDAV;
+- Remove bundled log4php code due to licensing issues;
+- Remove included SabreDAV 1.6.x version;
+- Upgrade to SabreDAV 1.8 API.
+
+* Wed Apr 17 2013 Alfred Klomp <alfred@bokxing-it.nl> 0.17.1
+- Add SabreDAV license file, to comply with SabreDAV license terms.
+
+* Mon Apr 15 2013 Alfred Klomp <alfred@bokxing-it.nl> 0.17
+- Add support for the 'department_name' VCard property;
+- Fix issue 30 from Google Code: birthdays before 1970 were ignored;
+- Fix issue 25 from Google Code: 'continue' only breaks switch, not foreach;
+- Fix issue 24 from Google Code: would not create addresses in new cards;
+- Upgrade included version of SabreDAV to version 1.6.9, the latest 1.6.x
+  release at time of writing;
+- Add ChangeLog file.

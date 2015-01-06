@@ -1,0 +1,7 @@
+# Composer stuff
+vendor/
+composer.lock
+tests/cov/
+
+#vim
+.*.swp
